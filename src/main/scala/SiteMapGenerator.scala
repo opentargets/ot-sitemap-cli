@@ -6,7 +6,7 @@ import scala.xml.Elem
 object SiteMapGenerator {
   lazy val modified: String = java.time.LocalDateTime.now.toString
   val MAX_CHUNK = 50000
-  val url = "https://www.targetvalidation.org"
+  val url = "https://beta.targetvalidation.org/"
 
   def generateSitesWithIndex(sites: Map[String, Iterable[String]]): Seq[(String, Elem)] = {
     val siteMaps = generateSites(sites)
@@ -27,23 +27,24 @@ object SiteMapGenerator {
     }
     sites.keySet
       .map(s => {
+        val uri = s"$url${s.takeWhile(_ != '_')}"
         val data = sites(s)
         if (data.size > chunkSize) {
           val chunks = breakIntoChunks(data).zipWithIndex.map(chunk => {
             (s"${s}_${chunk._2}", chunk._1)
           })
-          chunks.map(ch => (ch._1, generateSite(s, ch._2)))
-        } else Seq((s, generateSite(s, data)))
+          chunks.map(ch => (ch._1, generateSite(uri, ch._2)))
+        } else Seq((s, generateSite(uri, data)))
       })
       .toSeq
       .flatten
   }
 
-  def generateSite(site: String, pages: Iterable[String]): Elem = {
+  def generateSite(uriBase: String, pages: Iterable[String]): Elem = {
     <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
         {for (page <- pages) yield
         <url>
-          <loc>{url}/{site}/{page}</loc>
+          <loc>{uriBase}/{page}</loc>
           <lastmod>{modified}</lastmod>
         </url>
         }

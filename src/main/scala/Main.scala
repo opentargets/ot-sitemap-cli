@@ -25,9 +25,9 @@ object Main extends App with LazyLogging {
 
   def run(config: CommandLineConfig): Unit = {
     val siteAndIdQuery = Seq(
-      ("target", "SELECT id FROM `open-targets-eu-dev.platform_21_02.targets`"),
-      ("disease", "SELECT id FROM `open-targets-eu-dev.platform_21_02.diseases`"),
-      ("drug", "SELECT id FROM `open-targets-eu-dev.platform_21_02.drugs_drug`"),
+      ("target", s"SELECT id FROM `${config.bqProject}.${config.bqTables}.targets`"),
+      ("disease", s"SELECT id FROM `${config.bqProject}.${config.bqTables}.diseases`"),
+      ("drug", s"SELECT id FROM `${config.bqProject}.${config.bqTables}.drugs_drug`"),
     )
 
     val siteMapInputs: Seq[(String, Iterable[String])] = siteAndIdQuery
