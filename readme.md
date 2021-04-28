@@ -21,3 +21,8 @@ You can also use environment variables or Google Secret Manager.
 account and save that json file locally. 
 2. Add that key to [GCP Secret Manager](https://cloud.google.com/secret-manager) 
 3. Run `gcloud auth login --update-adc` to configure local account to use Secret Manager keys.
+
+## Dependency documentation
+
+- [Scopt](https://github.com/scopt/scopt): Used to generate the command line interface.
+- [GCP Java APIs](https://cloud.google.com/java/docs/reference)

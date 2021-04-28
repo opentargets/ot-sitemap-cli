@@ -3,8 +3,6 @@ package io.opentargets.sitemap
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 
-import scala.xml.Elem
-
 class SiteMapGeneratorSpec extends AnyFlatSpec {
   "SitemapGenerator" should "create a site xml representation of a series of URLs" in {
     // given

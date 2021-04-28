@@ -11,7 +11,9 @@ libraryDependencies ++= Seq(
   // Google Cloud Platform
   "com.google.cloud" % "google-cloud-bigquery" % "1.128.1",
   "com.google.cloud" % "google-cloud-storage" % "1.113.15",
-  // Test
+  // https://mvnrepository.com/artifact/com.google.cloud/google-cloud-resourcemanager
+  "com.google.cloud" % "google-cloud-resourcemanager" % "0.118.12-alpha",
+// Test
   "org.scalactic" %% "scalactic" % "3.2.7",
   "org.scalatest" %% "scalatest" % "3.2.7" % "test",
   // Logging
@@ -23,7 +25,7 @@ libraryDependencies ++= Seq(
 
 // Jar assembly: run `sbt assembly` to create fat jar
 mainClass in assembly := Some("io.opentargets.sitemap.Main")
-assemblyJarName in assembly := "ot-sitemap"
+assemblyJarName in assembly := "ot-sitemap.jar"
 assemblyMergeStrategy in assembly := {
   case PathList("META-INF", xs @ _*) => MergeStrategy.discard
   case _                             => MergeStrategy.first
