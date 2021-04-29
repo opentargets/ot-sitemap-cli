@@ -26,3 +26,5 @@ account and save that json file locally.
 
 - [Scopt](https://github.com/scopt/scopt): Used to generate the command line interface.
 - [GCP Java APIs](https://cloud.google.com/java/docs/reference)
+  - [ResourceManager](https://googleapis.dev/java/google-cloud-resourcemanager/latest/index.html) - Centrally manage all your projects, IAM, and resource containers.
+  - [Storage](https://googleapis.dev/java/google-cloud-storage/latest/index.html) - GCP storage

@@ -57,9 +57,26 @@ object Main extends App with LazyLogging {
     val siteMaps = SiteMapGenerator.generateSitesWithIndex(fullInputs.toMap)
 
     logger.info("Writing sitemaps to file.")
-    siteMaps.foreach(sm => {
-      XML.save(s"${sm._1}_pages.xml", sm._2, "utf-8", xmlDecl = true, null)
-    })
+    config.outputDir match {
+      case gs if gs.startsWith("gs://") => {
+        GstorageWriter.gsPathToBucketAndObjectPath(gs) match {
+          case Some(pathInfo) =>
+            logger.info(s"Writing to GCP Bucket ${pathInfo._1}")
+            val (bucket, path) = pathInfo
+            val writer = new GstorageWriter(bucket)
+            siteMaps.foreach(sm => {
+              writer.writeXml(s"$path/${sm._1}.xml", sm._2)
+            })
+          case None =>
+            logger.info("Unable to parse GCP path, writing to local directory /var/tmp")
+          // fixme todo
+        }
+      }
+      case _ =>
+        siteMaps.foreach(sm => {
+          XML.save(s"${sm._1}_pages.xml", sm._2, "utf-8", xmlDecl = true, null)
+        })
+    }
   }
 
 }
