@@ -2,6 +2,20 @@
 
 This repository is used to generate a [SEO 'sitemap'](https://developers.google.com/search/docs/advanced/sitemaps/overview) for the [Open Targets Platform](https://beta.targetvalidation.org/). 
 
+This program reads data from Google Big Query to generate the sitemaps, and optionally saves the outputs to Google 
+Cloud Storage. 
+
+The program generates sitemaps for:
+  - disease_association
+  - disease_profile
+  - drug_profile
+  - target_association
+  - target_profile
+
+And creates an index referencing each. 
+
+In cases where there are more than 50k entries the sitemap is split into chunks.
+
 ## Running locally 
 
 This script requires Google Cloud authentication to be set up to execute Big Query queries. 
@@ -10,6 +24,45 @@ If authentication is already set up you don't need to do anything, as Google App
 resolution mechanism will find the appropriate credentials in the default location. 
 
 You can also use environment variables or Google Secret Manager. 
+
+Create a jar file with the `sbt assembly` command from the directory containing 
+the `build.sbt` file. A jar file will be generated in the `/target/scala-2.12/` directory.
+
+To run the jar use the following command to display the help text: 
+
+`java -jar target/scala-2.12/ot-sitemap.jar --help`
+
+### Help text:
+
+```
+Generate SEO sitemaps for open targets platform. 0.1
+Usage: ot-sitemap [options] <bigQueryTable> [<bigQueryProject>]
+
+  <bigQueryTable>          BigQuery table to query for results, eg. platform_21_02
+  <bigQueryProject>        GCP project containing BQ tables. Default: open-targets-eu-dev
+  -o, --output-dir <value>
+                           
+                           Directory to save generated sitemaps into. Selected directory can be either an absolute or relative path or a 
+                           gcloud storage bucket location.
+                           
+                           The default directory is the current working directory. 
+                           
+                           If a storage bucket is selected then you must have authorisation set up on the machine running the program to 
+                           access those resources.
+  --help                   prints this usage text
+
+```
+
+### Example usage: 
+
+To query from BQ `platform_21_02` and save results to `gs://ot-releases/21_02/sitemaps`:
+```
+java -jar target/scala-2.12/ot-sitemap.jar \
+--output-dir=gs://ot-releases/21_02/sitemaps \
+platform_21_02
+```
+
+If no output directory is given sitemaps will be generated in the local directory.
 
 ### Using environment variable
 
