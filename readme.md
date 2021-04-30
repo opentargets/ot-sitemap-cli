@@ -77,6 +77,7 @@ account and save that json file locally.
 
 ## Dependency documentation
 
+- [Scala XML](https://github.com/scala/scala-xml/wiki)
 - [Scopt](https://github.com/scopt/scopt): Used to generate the command line interface.
 - [GCP Java APIs](https://cloud.google.com/java/docs/reference)
   - [ResourceManager](https://googleapis.dev/java/google-cloud-resourcemanager/latest/index.html) - Centrally manage all your projects, IAM, and resource containers.

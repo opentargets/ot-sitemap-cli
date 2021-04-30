@@ -7,7 +7,7 @@ import com.typesafe.scalalogging.LazyLogging
 import scopt.OParser
 
 import scala.collection.convert.ImplicitConversions.`iterable AsScalaIterable`
-import scala.xml.XML
+import scala.xml.{Elem, XML}
 
 object Main extends App with LazyLogging {
   logger.info("Starting sitemap generation...")
@@ -58,7 +58,7 @@ object Main extends App with LazyLogging {
 
     logger.info("Writing sitemaps to file.")
     config.outputDir match {
-      case gs if gs.startsWith("gs://") => {
+      case gs if gs.startsWith("gs://") =>
         GstorageWriter.gsPathToBucketAndObjectPath(gs) match {
           case Some(pathInfo) =>
             logger.info(s"Writing to GCP Bucket ${pathInfo._1}")
@@ -68,15 +68,18 @@ object Main extends App with LazyLogging {
               writer.writeXml(s"$path/${sm._1}.xml", sm._2)
             })
           case None =>
-            logger.info("Unable to parse GCP path, writing to local directory /var/tmp")
-          // fixme todo
+            logger.info(
+              s"Unable to parse GCP path, writing to local directory ${System.getProperty("user.dir")}")
+            writeXmlFiles(siteMaps)
         }
-      }
       case _ =>
-        siteMaps.foreach(sm => {
-          XML.save(s"${sm._1}_pages.xml", sm._2, "utf-8", xmlDecl = true, null)
-        })
+        writeXmlFiles(siteMaps)
     }
   }
 
+  private def writeXmlFiles(siteMaps: Seq[(String, Elem)]): Unit = {
+    siteMaps.foreach(sm => {
+      XML.save(s"${sm._1}_pages.xml", sm._2, "utf-8", xmlDecl = true, null)
+    })
+  }
 }
