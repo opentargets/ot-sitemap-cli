@@ -7,8 +7,9 @@ import GstorageWriter.gsBucketExists
 import java.nio.charset.StandardCharsets
 import scala.xml.Elem
 
-class GstorageWriter(bucket: String) extends LazyLogging {
-  implicit private lazy val storage: Storage = StorageOptions.getDefaultInstance.getService
+class GstorageWriter(bucket: String, projectId: String) extends LazyLogging {
+  implicit private lazy val storage: Storage =
+    StorageOptions.newBuilder().setProjectId(projectId).build().getService
   private lazy val prettyPrinter = new scala.xml.PrettyPrinter(200, 2)
   private val xmlDecl = "<?xml version='1.0' encoding='UTF-8'?>\n"
 
@@ -30,13 +31,8 @@ class GstorageWriter(bucket: String) extends LazyLogging {
 }
 
 object GstorageWriter extends LazyLogging {
-  private def gsBucketExists(gsPath: String)(implicit storage: Storage): Boolean = {
-    gsPathToBucketAndObjectPath(gsPath)
-      .map(_._1)
-      .exists(bn => {
-        storage.get(bn) != null
-      })
-  }
+  def gsBucketExists(bucket: String)(implicit storage: Storage): Boolean =
+    storage.get(bucket) != null
 
   def gsPathToBucketAndObjectPath(gsPath: String): Option[(String, String)] = {
     val path = gsPath.stripPrefix("gs://").split("/", 2)

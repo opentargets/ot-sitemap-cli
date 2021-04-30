@@ -55,14 +55,20 @@ Usage: ot-sitemap [options] <bigQueryTable> [<bigQueryProject>]
 
 ### Example usage: 
 
-To query from BQ `platform_21_02` and save results to `gs://ot-releases/21_02/sitemaps`:
+To query from BQ `platform_21_04` and save results to `gs://open-targets-data-releases/21.04/metadata/sitemaps` 
+within the domain of project `open-targets-prod`:
+
 ```
 java -jar target/scala-2.12/ot-sitemap.jar \
---output-dir=gs://ot-releases/21_02/sitemaps \
-platform_21_02
+--output-dir=gs://open-targets-data-releases/21.04/metadata/sitemaps
+platform_21_04
+open-targets-prod
 ```
 
-If no output directory is given sitemaps will be generated in the local directory.
+If no output directory is given sitemaps will be generated in the local directory. If an output directory is given 
+but either the Bucket is invalid or cloud storage is unavailable the outputs will be written to local disk. 
+
+Note, the project hosting Big Query is the project which the output will be written to. 
 
 ### Using environment variable
 

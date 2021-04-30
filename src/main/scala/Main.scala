@@ -10,11 +10,11 @@ import scala.collection.convert.ImplicitConversions.`iterable AsScalaIterable`
 import scala.xml.{Elem, XML}
 
 object Main extends App with LazyLogging {
-  logger.info("Starting sitemap generation...")
 
   OParser.parse(cliParser, args, CommandLineConfig()) match {
     case Some(config) =>
-      logger.info("Config parsed successfully")
+      logger.info("Starting sitemap generation.")
+      logger.info("Config parsed successfully.")
       run(config)
 
     case _ =>
@@ -27,7 +27,7 @@ object Main extends App with LazyLogging {
     val siteAndIdQuery = Seq(
       ("target", s"SELECT id FROM `${config.bqProject}.${config.bqTables}.targets`"),
       ("disease", s"SELECT id FROM `${config.bqProject}.${config.bqTables}.diseases`"),
-      ("drug", s"SELECT id FROM `${config.bqProject}.${config.bqTables}.drugs_drug`"),
+      ("drug", s"SELECT id FROM `${config.bqProject}.${config.bqTables}.molecule`"),
     )
 
     val siteMapInputs: Seq[(String, Iterable[String])] = siteAndIdQuery
@@ -61,12 +61,19 @@ object Main extends App with LazyLogging {
       case gs if gs.startsWith("gs://") =>
         GstorageWriter.gsPathToBucketAndObjectPath(gs) match {
           case Some(pathInfo) =>
-            logger.info(s"Writing to GCP Bucket ${pathInfo._1}")
-            val (bucket, path) = pathInfo
-            val writer = new GstorageWriter(bucket)
-            siteMaps.foreach(sm => {
-              writer.writeXml(s"$path/${sm._1}.xml", sm._2)
-            })
+            try {
+              logger.info(s"Writing to GCP Bucket ${pathInfo._1}")
+              val (bucket, path) = pathInfo
+              val writer = new GstorageWriter(bucket, config.bqProject)
+              siteMaps.foreach(sm => {
+                writer.writeXml(s"$path/${sm._1}.xml", sm._2)
+              })
+            } catch {
+              case ex: IllegalArgumentException =>
+                logger.info(
+                  s"Unable to find bucket, writing to local directory ${System.getProperty("user.dir")}")
+                writeXmlFiles(siteMaps)
+            }
           case None =>
             logger.info(
               s"Unable to parse GCP path, writing to local directory ${System.getProperty("user.dir")}")
