@@ -1,6 +1,6 @@
 name := "ot-sitemap"
-
-version := "0.1"
+organization := "io.opentargets"
+version := "1.0"
 
 scalaVersion := "2.12.12"
 

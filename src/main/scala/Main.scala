@@ -86,7 +86,7 @@ object Main extends App with LazyLogging {
 
   private def writeXmlFiles(siteMaps: Seq[(String, Elem)]): Unit = {
     siteMaps.foreach(sm => {
-      XML.save(s"${sm._1}_pages.xml", sm._2, "utf-8", xmlDecl = true, null)
+      XML.save(s"${sm._1}.xml", sm._2, "utf-8", xmlDecl = true, null)
     })
   }
 }
