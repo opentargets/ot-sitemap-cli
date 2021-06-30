@@ -1,0 +1,19 @@
+language: scala
+
+jdk: openjdk8
+
+scala:
+   - 2.10.4
+   - 2.12.13
+
+script:
+  - sbt assembly
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file: "target/scala-2.12/ot-sitemap.jar"
+  skip_cleanup: true
+  on:
+    tags: true
+    all_branches: true

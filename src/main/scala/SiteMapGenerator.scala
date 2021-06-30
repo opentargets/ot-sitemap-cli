@@ -6,7 +6,7 @@ import scala.xml.Elem
 object SiteMapGenerator {
   lazy val modified: String = java.time.LocalDateTime.now.toString
   val MAX_CHUNK = 50000
-  val url = "https://platform.opentargets.org"
+  val url = "https://platform.opentargets.org/"
 
   def generateSitesWithIndex(sites: Map[String, Iterable[String]]): Seq[(String, Elem)] = {
     val siteMaps = generateSites(sites)
@@ -55,7 +55,7 @@ object SiteMapGenerator {
     <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
       {for (page <- pages) yield
       <sitemap>
-        <loc>{url}sitemaps/{page}_pages.xml</loc>
+        <loc>{url}sitemaps/{page}.xml</loc>
         <lastmod>{modified}</lastmod>
       </sitemap> 
       }
