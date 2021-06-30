@@ -55,7 +55,7 @@ object SiteMapGenerator {
     <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
       {for (page <- pages) yield
       <sitemap>
-        <loc>{url}sitemaps/{page}_pages.xml</loc>
+        <loc>{url}sitemaps/{page}.xml</loc>
         <lastmod>{modified}</lastmod>
       </sitemap> 
       }
