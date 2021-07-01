@@ -4,7 +4,7 @@ import scala.annotation.tailrec
 import scala.xml.Elem
 
 object SiteMapGenerator {
-  lazy val modified: String = java.time.LocalDateTime.now.toString
+  lazy val modified: String = java.time.LocalDateTime.now.toLocalDate.toString
   val MAX_CHUNK = 50000
   val url = "https://platform.opentargets.org/"
 
