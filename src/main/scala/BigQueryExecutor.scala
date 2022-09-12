@@ -23,15 +23,16 @@ object BigQueryExecutor extends LazyLogging {
   def executeQuery[T](sqlQuery: String,
                       onSuccess: TableResult => T,
                       onError: Seq[BigQueryError] => Unit = logErrors,
-                      legacySql: Boolean = false): Option[T] = {
+                      legacySql: Boolean = false
+  ): Option[T] =
     executeQuery(sqlQuery, legacySql) match {
       case Left(errors)  => onError(errors); None
       case Right(result) => Some(onSuccess(result))
     }
-  }
 
   def executeQuery(sqlQuery: String,
-                   legacySql: Boolean): Either[Seq[BigQueryError], TableResult] = {
+                   legacySql: Boolean
+  ): Either[Seq[BigQueryError], TableResult] = {
     val queryConfig = QueryJobConfiguration
       .newBuilder(sqlQuery)
       .setUseLegacySql(legacySql)

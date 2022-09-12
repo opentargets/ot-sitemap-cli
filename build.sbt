@@ -4,8 +4,6 @@ version := "1.1"
 
 scalaVersion := "2.12.12"
 
-idePackagePrefix := Some("io.opentargets.sitemap")
-
 libraryDependencies ++= Seq(
   "org.scala-lang.modules" %% "scala-xml" % "1.2.0",
   // Google Cloud Platform

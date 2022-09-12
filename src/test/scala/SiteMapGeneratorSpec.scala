@@ -26,7 +26,7 @@ class SiteMapGeneratorSpec extends AnyFlatSpec {
     val urlCount = 100
     val desiredChunks = 2
     val urls =
-      Map("page" -> Array.fill(urlCount) { scala.util.Random.alphanumeric.take(10).toString }.toSeq)
+      Map("page" -> Array.fill(urlCount)(scala.util.Random.alphanumeric.take(10).toString).toSeq)
     // when
     val sites = SiteMapGenerator.generateSites(urls, urlCount / desiredChunks)
     // then
@@ -41,7 +41,8 @@ class SiteMapGeneratorSpec extends AnyFlatSpec {
           .fill(urlCount) {
             scala.util.Random.alphanumeric.take(10).toString
           }
-          .toSeq)
+          .toSeq
+      )
     // when
     val sites = SiteMapGenerator.generateSites(urls)
     // then
@@ -57,7 +58,8 @@ class SiteMapGeneratorSpec extends AnyFlatSpec {
                     "target_profiles",
                     "disease_association",
                     "disease_profile",
-                    "drug_profile_pages")
+                    "drug_profile_pages"
+    )
     // when
     val index = SiteMapGenerator.generateIndex(sites)
     // then

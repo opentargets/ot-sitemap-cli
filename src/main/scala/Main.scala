@@ -27,23 +27,23 @@ object Main extends App with LazyLogging {
     val siteAndIdQuery = Seq(
       ("target", s"SELECT id FROM `${config.bqProject}.${config.bqTables}.targets`"),
       ("disease", s"SELECT id FROM `${config.bqProject}.${config.bqTables}.diseases`"),
-      ("drug", s"SELECT id FROM `${config.bqProject}.${config.bqTables}.molecule`"),
+      ("drug", s"SELECT id FROM `${config.bqProject}.${config.bqTables}.molecule`")
     )
 
     val siteMapInputs: Seq[(String, Iterable[String])] = siteAndIdQuery
-      .map(s => {
+      .map { s =>
         logger.info(s"Querying BigQuery for ${s._1}")
         // assumes query is only returning the id field which is a string.
         val successCallback: TableResult => Iterable[String] =
           _.iterateAll.map(row => row.get("id").getStringValue)
         (s._1, BigQueryExecutor.executeQuery(s._2, successCallback, _ => ()))
-      })
+      }
       .withFilter(_._2.isDefined)
       .map(it => (it._1, it._2.get))
 
     // for target and diseases we need both association and profile, so 'duplicate' the datasets here
     val hasAssociations = Set("target", "disease")
-    val fullInputs: Seq[(String, Iterable[String])] = siteMapInputs.flatMap(smi => {
+    val fullInputs: Seq[(String, Iterable[String])] = siteMapInputs.flatMap { smi =>
       smi._1 match {
         case idx if hasAssociations.contains(idx) =>
           val profile = (smi._1 + "_profile", smi._2)
@@ -51,7 +51,7 @@ object Main extends App with LazyLogging {
           Seq(profile, association)
         case _ => Seq((smi._1 + "_profile", smi._2))
       }
-    })
+    }
 
     logger.info(s"Sitemap inputs generated for: ${fullInputs.map(_._1).mkString(",")}.")
     val siteMaps = SiteMapGenerator.generateSitesWithIndex(fullInputs.toMap)
@@ -65,18 +65,18 @@ object Main extends App with LazyLogging {
               logger.info(s"Writing to GCP Bucket ${pathInfo._1}")
               val (bucket, path) = pathInfo
               val writer = new GstorageWriter(bucket, config.bqProject)
-              siteMaps.foreach(sm => {
-                writer.writeXml(s"$path/${sm._1}.xml", sm._2)
-              })
+              siteMaps.foreach(sm => writer.writeXml(s"$path/${sm._1}.xml", sm._2))
             } catch {
               case ex: IllegalArgumentException =>
                 logger.info(
-                  s"Unable to find bucket, writing to local directory ${System.getProperty("user.dir")}")
+                  s"Unable to find bucket, writing to local directory ${System.getProperty("user.dir")}"
+                )
                 writeXmlFiles(siteMaps)
             }
           case None =>
             logger.info(
-              s"Unable to parse GCP path, writing to local directory ${System.getProperty("user.dir")}")
+              s"Unable to parse GCP path, writing to local directory ${System.getProperty("user.dir")}"
+            )
             writeXmlFiles(siteMaps)
         }
       case _ =>
@@ -84,9 +84,6 @@ object Main extends App with LazyLogging {
     }
   }
 
-  private def writeXmlFiles(siteMaps: Seq[(String, Elem)]): Unit = {
-    siteMaps.foreach(sm => {
-      XML.save(s"${sm._1}.xml", sm._2, "utf-8", xmlDecl = true, null)
-    })
-  }
+  private def writeXmlFiles(siteMaps: Seq[(String, Elem)]): Unit =
+    siteMaps.foreach(sm => XML.save(s"${sm._1}.xml", sm._2, "utf-8", xmlDecl = true, null))
 }

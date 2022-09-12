@@ -10,11 +10,11 @@ import scala.collection.JavaConverters._
 
 case class CommandLineConfig(bqTables: String = "platform_21_02",
                              bqProject: String = "open-targets-eu-dev",
-                             outputDir: String = System.getProperty("user.dir"))
+                             outputDir: String = System.getProperty("user.dir")
+)
 
-/**
-  * Container to hold longer command line interface help strings to avoid cluttering the specification of the CLI
-  * interface in CommandLineConfig.
+/** Container to hold longer command line interface help strings to avoid cluttering the
+  * specification of the CLI interface in CommandLineConfig.
   */
 trait CommandLineTextStrings {
 
@@ -41,8 +41,8 @@ trait CommandLineTextStrings {
 
 /** Command Line Interface using scopt project.
   *
-  *  See <a href="https://github.com/scopt/scopt">documentation</a> for
-  *  examples and usage of scopt library.
+  * See <a href="https://github.com/scopt/scopt">documentation</a> for examples and usage of scopt
+  * library.
   */
 object CommandLineConfig extends CommandLineTextStrings with LazyLogging {
 
@@ -53,7 +53,8 @@ object CommandLineConfig extends CommandLineTextStrings with LazyLogging {
     OParser.sequence(
       programName("ot-sitemap"),
       head("Generate SEO sitemaps for open targets platform.",
-           this.getClass.getPackage.getImplementationVersion),
+           this.getClass.getPackage.getImplementationVersion
+      ),
       arg[String]("<bigQueryTable>")
         .action((x, c) => c.copy(bqTables = x))
         .text("BigQuery table to query for results, eg. platform_21_02"),
@@ -62,7 +63,8 @@ object CommandLineConfig extends CommandLineTextStrings with LazyLogging {
         .action((x, c) => c.copy(bqProject = x))
         .text("GCP project containing BQ tables. Default: open-targets-eu-dev")
         .validate(pId =>
-          if (validateProjectId(pId)) success else failure(s"Project $pId not found.")),
+          if (validateProjectId(pId)) success else failure(s"Project $pId not found.")
+        ),
       opt[String]('o', "output-dir")
         .action((x, c) => c.copy(outputDir = x))
         .text(outputHelp),
